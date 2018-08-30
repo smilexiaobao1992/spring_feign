@@ -1,5 +1,7 @@
 package com.springfeign.controller;
 
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.springfeign.userclient.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,13 @@ public class FeignController {
     UserClient userClient;
 
     @RequestMapping(value = "/user1", method = RequestMethod.GET)
+    @HystrixCommand(fallbackMethod = "fallback")
     public String getUser() {
         return userClient.getUser();
+    }
+
+    public String fallback(){
+        return "服务访问失败，请稍后重试";
     }
 
 }
